@@ -125,6 +125,30 @@ namespace DSharpPlus.Lavalink.Entities
         }
     }
 
+    public class TimeScale
+    {
+        [JsonProperty("speed")]
+        public double Speed { get; set; } = 1;
+
+        [JsonProperty("pitch")]
+        public double Pitch { get; set; } = 1;
+
+        [JsonProperty("rate")]
+        public double Rate { get; set; } = 1;
+    }
+    
+    internal sealed class LavalinkTimescale : LavalinkPayload
+    {
+        [JsonProperty("timescale")]
+        public TimeScale Scale { get; }
+
+        public LavalinkTimescale(LavalinkGuildConnection lvl, TimeScale scale)
+            : base("filters", lvl.GuildIdString)
+        {
+            this.Scale = scale;
+        }
+    }
+
     internal sealed class LavalinkEqualizer : LavalinkPayload
     {
         [JsonProperty("bands")]
