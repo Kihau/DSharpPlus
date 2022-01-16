@@ -310,6 +310,18 @@ namespace DSharpPlus.Lavalink
             await this.Node.SendPayloadAsync(new LavalinkVolume(this, volume)).ConfigureAwait(false);
         }
 
+        public async Task SetTimescaleAsync(TimeScale scale)
+        {
+            if (!this.IsConnected)
+                throw new InvalidOperationException("This connection is not valid.");
+
+            if (scale.Speed < 0.0 || scale.Pitch < 0.0 || scale.Rate < 0.0)
+                throw new ArgumentOutOfRangeException(nameof(scale), "Speed, pitch and rate needs to greater than 0.0.");
+
+
+            await this.Node.SendPayloadAsync(new LavalinkTimescale(this, scale)).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Adjusts the specified bands in the audio equalizer. This will alter the sound output, and might incur a lot of CPU usage.
         /// </summary>
