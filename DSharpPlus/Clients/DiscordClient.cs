@@ -60,6 +60,7 @@ namespace DSharpPlus
         #endregion
 
         #region Public Fields/Properties
+
         /// <summary>
         /// Gets the gateway protocol version.
         /// </summary>
@@ -99,6 +100,7 @@ namespace DSharpPlus
         /// ID.
         /// </summary>
         public IReadOnlyDictionary<ulong, DiscordDmChannel> PrivateChannels { get; }
+
         internal ConcurrentDictionary<ulong, DiscordDmChannel> _privateChannels = new();
 
         /// <summary>
@@ -107,6 +109,7 @@ namespace DSharpPlus
         /// <see cref="GuildAvailable"/> or <see cref="GuildDownloadCompleted"/> events haven't been fired yet)
         /// </summary>
         public override IReadOnlyDictionary<ulong, DiscordGuild> Guilds { get; }
+
         internal ConcurrentDictionary<ulong, DiscordGuild> _guilds = new();
 
         /// <summary>
@@ -125,6 +128,7 @@ namespace DSharpPlus
 
         internal Dictionary<ulong, DiscordPresence> _presences = new();
         private Lazy<IReadOnlyDictionary<ulong, DiscordPresence>> _presencesLazy;
+
         #endregion
 
         #region Constructor/Internal Setup
@@ -139,9 +143,10 @@ namespace DSharpPlus
             if (this.Configuration.MessageCacheSize > 0)
             {
                 var intents = this.Configuration.Intents;
-                this.MessageCache = intents.HasIntent(DiscordIntents.GuildMessages) || intents.HasIntent(DiscordIntents.DirectMessages)
-                        ? new RingBuffer<DiscordMessage>(this.Configuration.MessageCacheSize)
-                        : null;
+                this.MessageCache = intents.HasIntent(DiscordIntents.GuildMessages) ||
+                                    intents.HasIntent(DiscordIntents.DirectMessages)
+                    ? new RingBuffer<DiscordMessage>(this.Configuration.MessageCacheSize)
+                    : null;
             }
 
             this.InternalSetup();
@@ -237,7 +242,8 @@ namespace DSharpPlus
 
             this._guilds.Clear();
 
-            this._presencesLazy = new Lazy<IReadOnlyDictionary<ulong, DiscordPresence>>(() => new ReadOnlyDictionary<ulong, DiscordPresence>(this._presences));
+            this._presencesLazy = new Lazy<IReadOnlyDictionary<ulong, DiscordPresence>>(() =>
+                new ReadOnlyDictionary<ulong, DiscordPresence>(this._presences));
         }
 
         #endregion
@@ -274,7 +280,8 @@ namespace DSharpPlus
         /// <exception cref="Exceptions.UnauthorizedException">Thrown when an invalid token was provided.</exception>
         /// <exception cref="Exceptions.BadRequestException">Thrown when an invalid parameter was provided.</exception>
         /// <exception cref="Exceptions.ServerErrorException">Thrown when Discord is unable to process the request.</exception>
-        public async Task ConnectAsync(DiscordActivity activity = null, UserStatus? status = null, DateTimeOffset? idlesince = null)
+        public async Task ConnectAsync(DiscordActivity activity = null, UserStatus? status = null,
+            DateTimeOffset? idlesince = null)
         {
             // Check if connection lock is already set, and set it if it isn't
             if (!this.ConnectionLock.Wait(0))
@@ -304,7 +311,9 @@ namespace DSharpPlus
             if (!this._isShard)
             {
                 if (this.Configuration.TokenType != TokenType.Bot)
-                    this.Logger.LogWarning(LoggerEvents.Misc, "You are logging in with a token that is not a bot token. This is not officially supported by Discord, and can result in your account being terminated if you aren't careful.");
+                    this.Logger.LogWarning(LoggerEvents.Misc,
+                        "You are logging in with a token that is not a bot token. This is not officially " +
+                        "supported by Discord, and can result in your account being terminated if you aren't careful.");
                 this.Logger.LogInformation(LoggerEvents.Startup, "DSharpPlus, version {Version}", this.VersionString);
             }
 
@@ -507,7 +516,8 @@ namespace DSharpPlus
         /// <exception cref="Exceptions.NotFoundException">Thrown when the channel does not exist.</exception>
         /// <exception cref="Exceptions.BadRequestException">Thrown when an invalid parameter was provided.</exception>
         /// <exception cref="Exceptions.ServerErrorException">Thrown when Discord is unable to process the request.</exception>
-        public Task<DiscordGuild> CreateGuildAsync(string name, string region = null, Optional<Stream> icon = default, VerificationLevel? verificationLevel = null,
+        public Task<DiscordGuild> CreateGuildAsync(string name, string region = null, Optional<Stream> icon = default,
+            VerificationLevel? verificationLevel = null,
             DefaultMessageNotifications? defaultMessageNotifications = null,
             SystemChannelFlags? systemChannelFlags = null)
         {
@@ -518,7 +528,8 @@ namespace DSharpPlus
             else if (icon.HasValue)
                 iconb64 = null;
 
-            return this.ApiClient.CreateGuildAsync(name, region, iconb64, verificationLevel, defaultMessageNotifications, systemChannelFlags);
+            return this.ApiClient.CreateGuildAsync(name, region, iconb64, verificationLevel,
+                defaultMessageNotifications, systemChannelFlags);
         }
 
         /// <summary>
@@ -530,7 +541,8 @@ namespace DSharpPlus
         /// <returns>The created guild.</returns>
         /// <exception cref="Exceptions.BadRequestException">Thrown when an invalid parameter was provided.</exception>
         /// <exception cref="Exceptions.ServerErrorException">Thrown when Discord is unable to process the request.</exception>
-        public Task<DiscordGuild> CreateGuildFromTemplateAsync(string code, string name, Optional<Stream> icon = default)
+        public Task<DiscordGuild> CreateGuildFromTemplateAsync(string code, string name,
+            Optional<Stream> icon = default)
         {
             var iconb64 = Optional.FromNoValue<string>();
             if (icon.HasValue && icon.Value != null)
@@ -585,7 +597,8 @@ namespace DSharpPlus
         /// <exception cref="Exceptions.NotFoundException">Thrown when the invite does not exists.</exception>
         /// <exception cref="Exceptions.BadRequestException">Thrown when an invalid parameter was provided.</exception>
         /// <exception cref="Exceptions.ServerErrorException">Thrown when Discord is unable to process the request.</exception>
-        public Task<DiscordInvite> GetInviteByCodeAsync(string code, bool? withCounts = null, bool? withExpiration = null)
+        public Task<DiscordInvite> GetInviteByCodeAsync(string code, bool? withCounts = null,
+            bool? withExpiration = null)
             => this.ApiClient.GetInviteAsync(code, withCounts, withExpiration);
 
         /// <summary>
@@ -627,7 +640,8 @@ namespace DSharpPlus
         /// <param name="userStatus">Status of the user.</param>
         /// <param name="idleSince">Since when is the client performing the specified activity.</param>
         /// <returns></returns>
-        public Task UpdateStatusAsync(DiscordActivity activity = null, UserStatus? userStatus = null, DateTimeOffset? idleSince = null)
+        public Task UpdateStatusAsync(DiscordActivity activity = null, UserStatus? userStatus = null,
+            DateTimeOffset? idleSince = null)
             => this.InternalUpdateStatusAsync(activity, userStatus, idleSince);
 
         /// <summary>
@@ -678,7 +692,8 @@ namespace DSharpPlus
         /// </summary>
         /// <param name="commands">The list of commands to overwrite with.</param>
         /// <returns>The list of global commands.</returns>
-        public Task<IReadOnlyList<DiscordApplicationCommand>> BulkOverwriteGlobalApplicationCommandsAsync(IEnumerable<DiscordApplicationCommand> commands) =>
+        public Task<IReadOnlyList<DiscordApplicationCommand>> BulkOverwriteGlobalApplicationCommandsAsync(
+            IEnumerable<DiscordApplicationCommand> commands) =>
             this.ApiClient.BulkOverwriteGlobalApplicationCommandsAsync(this.CurrentApplication.Id, commands);
 
         /// <summary>
@@ -717,7 +732,8 @@ namespace DSharpPlus
         /// <param name="commandId">The ID of the command to edit.</param>
         /// <param name="action">Action to perform.</param>
         /// <returns>The edited command.</returns>
-        public async Task<DiscordApplicationCommand> EditGlobalApplicationCommandAsync(ulong commandId, Action<ApplicationCommandEditModel> action)
+        public async Task<DiscordApplicationCommand> EditGlobalApplicationCommandAsync(ulong commandId,
+            Action<ApplicationCommandEditModel> action)
         {
             var mdl = new ApplicationCommandEditModel();
             action(mdl);
@@ -746,7 +762,8 @@ namespace DSharpPlus
         /// <param name="guildId">The ID of the guild.</param>
         /// <param name="commands">The list of commands to overwrite with.</param>
         /// <returns>The list of guild commands.</returns>
-        public Task<IReadOnlyList<DiscordApplicationCommand>> BulkOverwriteGuildApplicationCommandsAsync(ulong guildId, IEnumerable<DiscordApplicationCommand> commands) =>
+        public Task<IReadOnlyList<DiscordApplicationCommand>> BulkOverwriteGuildApplicationCommandsAsync(ulong guildId,
+            IEnumerable<DiscordApplicationCommand> commands) =>
             this.ApiClient.BulkOverwriteGuildApplicationCommandsAsync(this.CurrentApplication.Id, guildId, commands);
 
         /// <summary>
@@ -755,7 +772,8 @@ namespace DSharpPlus
         /// <param name="guildId">The ID of the guild to create the application command in.</param>
         /// <param name="command">The command to create.</param>
         /// <returns>The created command.</returns>
-        public Task<DiscordApplicationCommand> CreateGuildApplicationCommandAsync(ulong guildId, DiscordApplicationCommand command) =>
+        public Task<DiscordApplicationCommand> CreateGuildApplicationCommandAsync(ulong guildId,
+            DiscordApplicationCommand command) =>
             this.ApiClient.CreateGuildApplicationCommandAsync(this.CurrentApplication.Id, guildId, command);
 
         /// <summary>
@@ -765,7 +783,7 @@ namespace DSharpPlus
         /// <param name="commandId">The ID of the command to get.</param>
         /// <returns>The command with the ID.</returns>
         public Task<DiscordApplicationCommand> GetGuildApplicationCommandAsync(ulong guildId, ulong commandId) =>
-             this.ApiClient.GetGuildApplicationCommandAsync(this.CurrentApplication.Id, guildId, commandId);
+            this.ApiClient.GetGuildApplicationCommandAsync(this.CurrentApplication.Id, guildId, commandId);
 
         /// <summary>
         /// Edits a application command in a guild.
@@ -774,7 +792,8 @@ namespace DSharpPlus
         /// <param name="commandId">The ID of the command to edit.</param>
         /// <param name="action">Action to perform.</param>
         /// <returns>The edited command.</returns>
-        public async Task<DiscordApplicationCommand> EditGuildApplicationCommandAsync(ulong guildId, ulong commandId, Action<ApplicationCommandEditModel> action)
+        public async Task<DiscordApplicationCommand> EditGuildApplicationCommandAsync(ulong guildId, ulong commandId,
+            Action<ApplicationCommandEditModel> action)
         {
             var mdl = new ApplicationCommandEditModel();
             action(mdl);
@@ -789,6 +808,7 @@ namespace DSharpPlus
         /// <param name="commandId">The ID of the command.</param>
         public Task DeleteGuildApplicationCommandAsync(ulong guildId, ulong commandId) =>
             this.ApiClient.DeleteGuildApplicationCommandAsync(this.CurrentApplication.Id, guildId, commandId);
+
         #endregion
 
         #region Internal Caching Methods
@@ -826,11 +846,12 @@ namespace DSharpPlus
             return null;
         }
 
-        private void UpdateMessage(DiscordMessage message, TransportUser author, DiscordGuild guild, TransportMember member)
+        private void UpdateMessage(DiscordMessage message, TransportUser author, DiscordGuild guild,
+            TransportMember member)
         {
             if (author != null)
             {
-                var usr = new DiscordUser(author) { Discord = this };
+                var usr = new DiscordUser(author) {Discord = this};
 
                 if (member != null)
                     member.User = author;
@@ -838,7 +859,8 @@ namespace DSharpPlus
                 message.Author = this.UpdateUser(usr, guild?.Id, guild, member);
             }
 
-            var channel = this.InternalGetCachedChannel(message.ChannelId) ?? this.InternalGetCachedThread(message.ChannelId);
+            var channel = this.InternalGetCachedChannel(message.ChannelId) ??
+                          this.InternalGetCachedThread(message.ChannelId);
 
             if (channel != null) return;
 
@@ -848,14 +870,9 @@ namespace DSharpPlus
                     Id = message.ChannelId,
                     Discord = this,
                     Type = ChannelType.Private,
-                    Recipients = new DiscordUser[] { message.Author }
+                    Recipients = new DiscordUser[] {message.Author}
                 }
-                : new DiscordChannel
-                {
-                    Id = message.ChannelId,
-                    GuildId = guild.Id,
-                    Discord = this
-                };
+                : new DiscordChannel {Id = message.ChannelId, GuildId = guild.Id, Discord = this};
 
             message.Channel = channel;
         }
@@ -866,29 +883,34 @@ namespace DSharpPlus
             {
                 if (mbr.User != null)
                 {
-                    usr = new DiscordUser(mbr.User) { Discord = this };
+                    usr = new DiscordUser(mbr.User) {Discord = this};
 
                     this.UpdateUserCache(usr);
 
-                    usr = new DiscordMember(mbr) { Discord = this, _guild_id = guildId.Value };
+                    usr = new DiscordMember(mbr) {Discord = this, _guild_id = guildId.Value};
                 }
 
                 var intents = this.Configuration.Intents;
 
                 DiscordMember member = default;
 
-                if (!intents.HasAllPrivilegedIntents() || guild.IsLarge) // we have the necessary privileged intents, no need to worry about caching here unless guild is large.
+                if (!intents.HasAllPrivilegedIntents() ||
+                    guild.IsLarge) // we have the necessary privileged intents, no need to worry about caching here unless guild is large.
                 {
                     if (guild?._members.TryGetValue(usr.Id, out member) == false)
                     {
-                        if (intents.HasIntent(DiscordIntents.GuildMembers) || this.Configuration.AlwaysCacheMembers) // member can be updated by events, so cache it
+                        if (intents.HasIntent(DiscordIntents.GuildMembers) ||
+                            this.Configuration.AlwaysCacheMembers) // member can be updated by events, so cache it
                         {
                             guild._members.TryAdd(usr.Id, (DiscordMember)usr);
                         }
                     }
-                    else if (intents.HasIntent(DiscordIntents.GuildPresences) || this.Configuration.AlwaysCacheMembers) // we can attempt to update it if it's already in cache.
+                    else if (intents.HasIntent(DiscordIntents.GuildPresences) ||
+                             this.Configuration
+                                 .AlwaysCacheMembers) // we can attempt to update it if it's already in cache.
                     {
-                        if (!intents.HasIntent(DiscordIntents.GuildMembers)) // no need to update if we already have the member events
+                        if (!intents.HasIntent(DiscordIntents
+                                .GuildMembers)) // no need to update if we already have the member events
                         {
                             _ = guild._members.TryUpdate(usr.Id, (DiscordMember)usr, member);
                         }
@@ -928,6 +950,7 @@ namespace DSharpPlus
                     guild._channels[channel.Id] = channel;
                 }
             }
+
             if (newGuild._threads != null && newGuild._threads.Count > 0)
             {
                 foreach (var thread in newGuild._threads.Values)
@@ -952,10 +975,10 @@ namespace DSharpPlus
                 {
                     var xtm = xj.ToDiscordObject<TransportMember>();
 
-                    var xu = new DiscordUser(xtm.User) { Discord = this };
+                    var xu = new DiscordUser(xtm.User) {Discord = this};
                     this.UpdateUserCache(xu);
 
-                    guild._members[xtm.User.Id] = new DiscordMember(xtm) { Discord = this, _guild_id = guild.Id };
+                    guild._members[xtm.User.Id] = new DiscordMember(xtm) {Discord = this, _guild_id = guild.Id};
                 }
             }
 
@@ -1013,7 +1036,8 @@ namespace DSharpPlus
             // - guild.Unavailable = new_guild.Unavailable;
         }
 
-        private void PopulateMessageReactionsAndCache(DiscordMessage message, TransportUser author, TransportMember member)
+        private void PopulateMessageReactionsAndCache(DiscordMessage message, TransportUser author,
+            TransportMember member)
         {
             var guild = message.Channel?.Guild ?? this.InternalGetCachedGuild(message._guildId);
 
@@ -1028,7 +1052,6 @@ namespace DSharpPlus
                 this.MessageCache?.Add(message);
         }
 
-
         #endregion
 
         #region Disposal
@@ -1040,6 +1063,7 @@ namespace DSharpPlus
 
 
         private bool _disposed;
+
         /// <summary>
         /// Disposes your DiscordClient.
         /// </summary>
