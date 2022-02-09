@@ -326,7 +326,6 @@ namespace DSharpPlus.Lavalink
             //     throw new ArgumentOutOfRangeException(nameof(scale),
             //         "Speed, pitch and rate needs to greater than 0.0.");
 
-
             await this.Node.SendPayloadAsync(new LavalinkAudiofilters(this, filters)).ConfigureAwait(false);
         }
 
