@@ -51,6 +51,7 @@ namespace DSharpPlus.Lavalink
             add { this._playerUpdated.Register(value); }
             remove { this._playerUpdated.Unregister(value); }
         }
+
         private readonly AsyncEvent<LavalinkGuildConnection, PlayerUpdateEventArgs> _playerUpdated;
 
         /// <summary>
@@ -62,6 +63,7 @@ namespace DSharpPlus.Lavalink
             add { this._playbackStarted.Register(value); }
             remove { this._playbackStarted.Unregister(value); }
         }
+
         private readonly AsyncEvent<LavalinkGuildConnection, TrackStartEventArgs> _playbackStarted;
 
         /// <summary>
@@ -72,6 +74,7 @@ namespace DSharpPlus.Lavalink
             add { this._playbackFinished.Register(value); }
             remove { this._playbackFinished.Unregister(value); }
         }
+
         private readonly AsyncEvent<LavalinkGuildConnection, TrackFinishEventArgs> _playbackFinished;
 
         /// <summary>
@@ -82,6 +85,7 @@ namespace DSharpPlus.Lavalink
             add { this._trackStuck.Register(value); }
             remove { this._trackStuck.Unregister(value); }
         }
+
         private readonly AsyncEvent<LavalinkGuildConnection, TrackStuckEventArgs> _trackStuck;
 
         /// <summary>
@@ -92,6 +96,7 @@ namespace DSharpPlus.Lavalink
             add { this._trackException.Register(value); }
             remove { this._trackException.Unregister(value); }
         }
+
         private readonly AsyncEvent<LavalinkGuildConnection, TrackExceptionEventArgs> _trackException;
 
         /// <summary>
@@ -102,12 +107,14 @@ namespace DSharpPlus.Lavalink
             add { this._webSocketClosed.Register(value); }
             remove { this._webSocketClosed.Unregister(value); }
         }
+
         private readonly AsyncEvent<LavalinkGuildConnection, WebSocketCloseEventArgs> _webSocketClosed;
 
         /// <summary>
         /// Gets whether this channel is still connected.
         /// </summary>
         public bool IsConnected => !Volatile.Read(ref this._isDisposed) && this.Channel != null;
+
         private bool _isDisposed = false;
 
         /// <summary>
@@ -135,7 +142,8 @@ namespace DSharpPlus.Lavalink
         internal VoiceStateUpdateEventArgs VoiceStateUpdate { get; set; }
         internal TaskCompletionSource<bool> VoiceWsDisconnectTcs { get; set; }
 
-        internal LavalinkGuildConnection(LavalinkNodeConnection node, DiscordChannel channel, VoiceStateUpdateEventArgs vstu)
+        internal LavalinkGuildConnection(LavalinkNodeConnection node, DiscordChannel channel,
+            VoiceStateUpdateEventArgs vstu)
         {
             this.Node = node;
             this.VoiceStateUpdate = vstu;
@@ -156,7 +164,6 @@ namespace DSharpPlus.Lavalink
         /// Disconnects the connection from the voice channel.
         /// </summary>
         /// <param name="shouldDestroy">Whether the connection should be destroyed on the Lavalink server when leaving.</param>
-
         public Task DisconnectAsync(bool shouldDestroy = true)
             => this.DisconnectInternalAsync(shouldDestroy);
 
@@ -184,10 +191,7 @@ namespace DSharpPlus.Lavalink
                 OpCode = 4,
                 Payload = new VoiceStateUpdatePayload
                 {
-                    GuildId = this.GuildId,
-                    ChannelId = null,
-                    Deafened = false,
-                    Muted = false
+                    GuildId = this.GuildId, ChannelId = null, Deafened = false, Muted = false
                 }
             };
             var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
@@ -200,7 +204,8 @@ namespace DSharpPlus.Lavalink
         /// <param name="searchQuery">What to search for.</param>
         /// <param name="type">What platform will search for.</param>
         /// <returns>A collection of tracks matching the criteria.</returns>
-        public Task<LavalinkLoadResult> GetTracksAsync(string searchQuery, LavalinkSearchType type = LavalinkSearchType.Youtube)
+        public Task<LavalinkLoadResult> GetTracksAsync(string searchQuery,
+            LavalinkSearchType type = LavalinkSearchType.Youtube)
             => this.Node.Rest.GetTracksAsync(searchQuery, type);
 
         /// <summary>
@@ -244,7 +249,8 @@ namespace DSharpPlus.Lavalink
                 throw new InvalidOperationException("This connection is not valid.");
 
             if (start.TotalMilliseconds < 0 || end <= start)
-                throw new ArgumentException("Both start and end timestamps need to be greater or equal to zero, and the end timestamp needs to be greater than start timestamp.");
+                throw new ArgumentException(
+                    "Both start and end timestamps need to be greater or equal to zero, and the end timestamp needs to be greater than start timestamp.");
 
             this.CurrentState.CurrentTrack = track;
             await this.Node.SendPayloadAsync(new LavalinkPlayPartial(this, track, start, end));
@@ -316,7 +322,8 @@ namespace DSharpPlus.Lavalink
                 throw new InvalidOperationException("This connection is not valid.");
 
             if (scale.Speed < 0.0 || scale.Pitch < 0.0 || scale.Rate < 0.0)
-                throw new ArgumentOutOfRangeException(nameof(scale), "Speed, pitch and rate needs to greater than 0.0.");
+                throw new ArgumentOutOfRangeException(nameof(scale),
+                    "Speed, pitch and rate needs to greater than 0.0.");
 
 
             await this.Node.SendPayloadAsync(new LavalinkTimescale(this, scale)).ConfigureAwait(false);
@@ -356,7 +363,8 @@ namespace DSharpPlus.Lavalink
             this.CurrentState.LastUpdate = newState.Time;
             this.CurrentState.PlaybackPosition = newState.Position;
 
-            return this._playerUpdated.InvokeAsync(this, new PlayerUpdateEventArgs(this, newState.Time, newState.Position));
+            return this._playerUpdated.InvokeAsync(this,
+                new PlayerUpdateEventArgs(this, newState.Time, newState.Position));
         }
 
         internal Task InternalPlaybackStartedAsync(string track)
