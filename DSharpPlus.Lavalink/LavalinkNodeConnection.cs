@@ -316,7 +316,7 @@ namespace DSharpPlus.Lavalink
                 }
             };
             var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
-            await (channel.Discord as DiscordClient).WsSendAsync(vsj).ConfigureAwait(false);
+            await ((DiscordClient) channel.Discord).WsSendAsync(vsj).ConfigureAwait(false);
             var vstu = await vstut.Task.ConfigureAwait(false);
             var vsru = await vsrut.Task.ConfigureAwait(false);
             await this.SendPayloadAsync(new LavalinkVoiceUpdate(vstu, vsru)).ConfigureAwait(false);
