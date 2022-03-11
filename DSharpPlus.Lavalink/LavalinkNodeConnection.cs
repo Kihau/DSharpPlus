@@ -369,6 +369,9 @@ namespace DSharpPlus.Lavalink
         internal async Task SendPayloadAsync(LavalinkPayload payload)
             => await this.WsSendAsync(JsonConvert.SerializeObject(payload, Formatting.None));
 
+        internal async Task SendStringPayloadAsync(string payload)
+            => await this.WsSendAsync(payload).ConfigureAwait(false);
+
         private async Task WebSocket_OnMessage(IWebSocketClient client, SocketMessageEventArgs e)
         {
             if (e is not SocketTextMessageEventArgs et)

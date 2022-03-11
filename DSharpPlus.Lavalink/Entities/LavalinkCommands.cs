@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#nullable enable
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -125,18 +126,157 @@ namespace DSharpPlus.Lavalink.Entities
         }
     }
 
+    public class Karaoke
+    {
+        [JsonProperty("level")]
+        public double Level { get; set; }
+
+        [JsonProperty("monoLevel")]
+        public double MonoLevel { get; set; }
+
+        [JsonProperty("filterBand")]
+        public double FilterBand { get; set; }
+
+        [JsonProperty("filterWidth")]
+        public double FilterWidth { get; set; }
+    }
+
     public class TimeScale
     {
         [JsonProperty("speed")]
-        public double Speed { get; set; } = 1;
+        public double Speed { get; set; }
 
         [JsonProperty("pitch")]
-        public double Pitch { get; set; } = 1;
+        public double Pitch { get; set; }
 
         [JsonProperty("rate")]
-        public double Rate { get; set; } = 1;
+        public double Rate { get; set; }
     }
-    
+
+    public class Tremolo
+    {
+        [JsonProperty("frequency")]
+        public double Frequency { get; set; }
+
+        [JsonProperty("depth")]
+        public double Depth { get; set; }
+    }
+
+    public class Vibrato
+    {
+        [JsonProperty("frequency")]
+        public double Frequency { get; set; }
+
+        [JsonProperty("depth")]
+        public double Depth { get; set; }
+    }
+
+    public class Rotation
+    {
+        [JsonProperty("rotationHz")]
+        public double RotationFreq { get; set; }
+    }
+
+    public class Distortion
+    {
+        [JsonProperty("sinOffset")]
+        public double SinOffset { get; set; }
+
+        [JsonProperty("sinScale")]
+        public double SinScale { get; set; }
+
+        [JsonProperty("cosOffset")]
+        public double CosOffset { get; set; }
+
+        [JsonProperty("cosScale")]
+        public double CosScale { get; set; }
+
+        [JsonProperty("tanOffset")]
+        public double TanOffset { get; set; }
+
+        [JsonProperty("tanScale")]
+        public double TanScale { get; set; }
+
+        [JsonProperty("offset")]
+        public double Offset { get; set; }
+
+        [JsonProperty("scale")]
+        public double Scale { get; set; }
+    }
+
+    public class ChannelMix
+    {
+        [JsonProperty("leftToLeft")]
+        public double LeftToLeft { get; set; }
+
+        [JsonProperty("leftToRight")]
+        public double LeftToRight { get; set; }
+
+        [JsonProperty("rightToLeft")]
+        public double RightToLeft { get; set; }
+
+        [JsonProperty("rightToRight")]
+        public double RightToRight { get; set; }
+    }
+
+    public class LowPass
+    {
+        [JsonProperty("smoothing")]
+        public double Smoothing { get; set; }
+    }
+
+    public class AudioFilters
+    {
+        public Karaoke? Karaoke { get; set; }
+        public TimeScale? Timescale { get; set; }
+        public Tremolo? Tremolo { get; set; }
+        public Vibrato? Vibrato { get; set; }
+        public Rotation? Rotation { get; set; }
+        public Distortion? Distortion { get; set; }
+        public ChannelMix? Channelmix { get; set; }
+        public LowPass? Lowpass { get; set; }
+    }
+
+    internal sealed class LavalinkAudiofilters : LavalinkPayload
+    {
+        [JsonProperty("karaoke")]
+        public Karaoke? Karaoke { get; }
+
+        [JsonProperty("timescale")]
+        public TimeScale? Timescale { get; }
+
+        [JsonProperty("tremolo")]
+        public Tremolo? Tremolo { get; }
+
+        [JsonProperty("vibrato")]
+        public Vibrato? Vibrato { get; }
+
+        [JsonProperty("rotation")]
+        public Rotation? Rotation { get; }
+
+        [JsonProperty("distortion")]
+        public Distortion? Distortion { get; }
+
+        [JsonProperty("channelMix")]
+        public ChannelMix? Channelmix { get; }
+
+        [JsonProperty("lowPass")]
+        public LowPass? Lowpass { get; }
+
+        public LavalinkAudiofilters(LavalinkGuildConnection lvl, AudioFilters filters)
+            : base("filters", lvl.GuildIdString)
+        {
+            this.Karaoke = filters.Karaoke;
+            this.Timescale = filters.Timescale;
+            this.Tremolo = filters.Tremolo;
+            this.Vibrato = filters.Vibrato;
+            this.Rotation = filters.Rotation;
+            this.Distortion = filters.Distortion;
+            this.Channelmix = filters.Channelmix;
+            this.Lowpass = filters.Lowpass;
+        }
+    }
+
     internal sealed class LavalinkTimescale : LavalinkPayload
     {
         [JsonProperty("timescale")]
