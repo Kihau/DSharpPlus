@@ -344,7 +344,6 @@ namespace DSharpPlus.Lavalink
             var vstu = await vstut.Task;
             var vsru = await vsrut.Task;
             await this.SendPayloadAsync(new LavalinkVoiceUpdate(vstu, vsru));
-
             var con = new LavalinkGuildConnection(this, channel, vstu);
             con.ChannelDisconnected += this.Con_ChannelDisconnected;
             con.PlayerUpdated += (s, e) => this._playerUpdated.InvokeAsync(s, e);
