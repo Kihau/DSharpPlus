@@ -730,6 +730,15 @@ namespace DSharpPlus
         }
         private AsyncEvent<DiscordClient, ApplicationCommandEventArgs> _applicationCommandDeleted;
 
+        [Obsolete("This event may be removed by discord and may not fire anymore.", false)]
+        public event AsyncEventHandler<DiscordClient, ApplicationCommandPermissionsUpdatedEventArgs> ApplicationCommandPermissionsUpdated
+        {
+            add => this._applicationCommandPermissionsUpdated.Register(value);
+            remove => this._applicationCommandPermissionsUpdated.Unregister(value);
+        }
+
+        private AsyncEvent<DiscordClient, ApplicationCommandPermissionsUpdatedEventArgs> _applicationCommandPermissionsUpdated;
+
         #endregion
 
         #region Integration
@@ -822,6 +831,17 @@ namespace DSharpPlus
         }
 
         private AsyncEvent<DiscordClient, ComponentInteractionCreateEventArgs> _componentInteractionCreated;
+
+        /// <summary>
+        /// Fired when a modal is submitted. If a modal is closed, this event is not fired.
+        /// </summary>
+        public event AsyncEventHandler<DiscordClient, ModalSubmitEventArgs> ModalSubmitted
+        {
+            add => this._modalSubmitted.Register(value);
+            remove => this._modalSubmitted.Unregister(value);
+        }
+
+        private AsyncEvent<DiscordClient, ModalSubmitEventArgs> _modalSubmitted;
 
         /// <summary>
         /// Fired when a user uses a context menu.
