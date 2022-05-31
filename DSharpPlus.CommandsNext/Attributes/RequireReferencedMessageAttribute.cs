@@ -21,25 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using DSharpPlus.Entities;
 
-namespace DSharpPlus.Entities
+namespace DSharpPlus.CommandsNext.Attributes
 {
     /// <summary>
-    /// Represents a followed channel.
+    /// Defines that a command is only usable when sent in reply. Command will appear in help regardless of this attribute.
     /// </summary>
-    public class DiscordFollowedChannel
+    public sealed class RequireReferencedMessageAttribute : CheckBaseAttribute
     {
         /// <summary>
-        /// Gets the ID of the channel following the announcement channel.
+        /// Defines that a command is only usable when sent in reply. Command will appear in help regardless of this attribute.
         /// </summary>
-        [JsonProperty("channel_id", NullValueHandling = NullValueHandling.Ignore)]
-        public ulong ChannelId { get; internal set; }
+        public RequireReferencedMessageAttribute()
+        { }
 
-        /// <summary>
-        /// Gets the ID of the webhook that posts crossposted messages to the channel.
-        /// </summary>
-        [JsonProperty("webhook_id", NullValueHandling = NullValueHandling.Ignore)]
-        public ulong WebhookId { get; internal set; }
+        public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
+            => Task.FromResult(help || ctx.Message.ReferencedMessage != null);
     }
 }

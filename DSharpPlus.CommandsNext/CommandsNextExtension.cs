@@ -150,7 +150,7 @@ namespace DSharpPlus.CommandsNext
 
             var t = typeof(CommandsNextExtension);
             var ms = t.GetTypeInfo().DeclaredMethods;
-            var m = ms.FirstOrDefault(xm => xm.Name == "ConvertArgument" && xm.ContainsGenericParameters && !xm.IsStatic && xm.IsPublic);
+            var m = ms.FirstOrDefault(xm => xm.Name == nameof(ConvertArgument) && xm.ContainsGenericParameters && !xm.IsStatic && xm.IsPublic);
             this.ConvertGeneric = m;
         }
 
@@ -237,7 +237,7 @@ namespace DSharpPlus.CommandsNext
             var cnt = e.Message.Content.Substring(mpos);
 
             var __ = 0;
-            var fname = cnt.ExtractNextArgument(ref __);
+            var fname = cnt.ExtractNextArgument(ref __, this.Config.QuotationMarks);
 
             var cmd = this.FindCommand(cnt, out var args);
             var ctx = this.CreateContext(e.Message, pfx, cmd, args);
@@ -263,7 +263,7 @@ namespace DSharpPlus.CommandsNext
 
             var ignoreCase = !this.Config.CaseSensitive;
             var pos = 0;
-            var next = commandString.ExtractNextArgument(ref pos);
+            var next = commandString.ExtractNextArgument(ref pos, this.Config.QuotationMarks);
             if (next is null)
                 return null;
 
@@ -289,7 +289,7 @@ namespace DSharpPlus.CommandsNext
             {
                 var cm2 = cmd as CommandGroup;
                 var oldPos = pos;
-                next = commandString.ExtractNextArgument(ref pos);
+                next = commandString.ExtractNextArgument(ref pos, this.Config.QuotationMarks);
                 if (next is null)
                     break;
 
@@ -489,14 +489,8 @@ namespace DSharpPlus.CommandsNext
                         foreach (var chk in inheritedChecks)
                             groupBuilder.WithExecutionCheck(chk);
 
-                        var groupCandidates = ti.DeclaredMethods.Where(x => x.IsCommandCandidate(out _) && x.GetCustomAttribute<GroupCommandAttribute>() != null).ToArray();
-
-                        _ = groupCandidates.Length switch
-                        {
-                            0 => null,
-                            1 => groupBuilder.WithOverload(new CommandOverloadBuilder(groupCandidates[0])),
-                            _ => throw new InvalidOverloadException($"Commands marked with [{nameof(GroupCommandAttribute)}] cannot be overloaded", groupCandidates[0])
-                        };
+                        foreach (var mi in ti.DeclaredMethods.Where(x => x.IsCommandCandidate(out _) && x.GetCustomAttribute<GroupCommandAttribute>() != null))
+                            groupBuilder.WithOverload(new CommandOverloadBuilder(mi));
                         break;
 
                     case AliasesAttribute a:

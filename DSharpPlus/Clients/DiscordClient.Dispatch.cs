@@ -1252,8 +1252,10 @@ namespace DSharpPlus
             var pending_old = mbr.IsPending;
             var roles_old = new ReadOnlyCollection<DiscordRole>(new List<DiscordRole>(mbr.Roles));
             var avatar_old = mbr.GuildAvatarHash;
+            var username_old = mbr.Username;
             var commm_old = mbr.CommunicationDisabledUntil;
 
+            mbr.Username = member.User.Username;
             mbr._avatarHash = member.AvatarHash;
             mbr.Nickname = nick;
             mbr.IsPending = pending;
@@ -1269,12 +1271,14 @@ namespace DSharpPlus
                 NicknameAfter = mbr.Nickname,
                 RolesAfter = new ReadOnlyCollection<DiscordRole>(new List<DiscordRole>(mbr.Roles)),
                 AvatarHashAfter = mbr.AvatarHash,
+                UsernameAfter = mbr.Username,
                 PendingAfter = mbr.IsPending,
                 CommunicationDisabledUntilAfter = mbr.CommunicationDisabledUntil,
 
                 NicknameBefore = nick_old,
                 RolesBefore = roles_old,
                 AvatarHashBefore = avatar_old,
+                UsernameBefore = username_old,
                 PendingBefore = pending_old,
                 CommunicationDisabledUntilBefore = commm_old
             };
@@ -2158,8 +2162,19 @@ namespace DSharpPlus
         internal async Task OnThreadMembersUpdateEventAsync(DiscordGuild guild, ulong thread_id, IReadOnlyList<DiscordThreadChannelMember> addedMembers, IReadOnlyList<ulong?> removed_member_ids, int member_count)
         {
             var thread = this.InternalGetCachedThread(thread_id);
+
+            if (thread == null) // Should a member of an archived thread leave, THREAD_MEMBERS_UPDATE is fired by Discord. Archived threads are not guaranteed to be in cache. PR ##1120 
+            {
+                thread = new DiscordThreadChannel
+                {
+                    Id = thread_id,
+                    GuildId = guild.Id,
+                };
+            }
+
             thread.Discord = this;
             guild.Discord = this;
+            thread.MemberCount = member_count;
 
             var removedMembers = new List<DiscordMember>();
             if (removed_member_ids != null)
@@ -2168,26 +2183,26 @@ namespace DSharpPlus
                 {
                     removedMembers.Add(guild._members.TryGetValue(removedId.Value, out var member) ? member : new DiscordMember { Id = removedId.Value, _guild_id = guild.Id, Discord = this });
                 }
+
+                if (removed_member_ids.Contains(this.CurrentUser.Id)) //indicates the bot was removed from the thread
+                    thread.CurrentMember = null;
             }
             else
                 removed_member_ids = Array.Empty<ulong?>();
+
             if (addedMembers != null)
             {
                 foreach (var threadMember in addedMembers)
                 {
                     threadMember.Discord = this;
                     threadMember._guild_id = guild.Id;
-
-                    if (threadMember.Id == this.CurrentUser.Id)
-                        thread.CurrentMember = threadMember;
                 }
+
+                if (addedMembers.Any(member => member.Id == this.CurrentUser.Id))
+                    thread.CurrentMember = addedMembers.Single(member => member.Id == this.CurrentUser.Id);
             }
             else
                 addedMembers = Array.Empty<DiscordThreadChannelMember>();
-
-            if (removed_member_ids.Contains(this.CurrentUser.Id)) //indicates the bot was removed from the thread
-                thread.CurrentMember = null;
-            thread.MemberCount = member_count;
 
             var threadMembersUpdateArg = new ThreadMembersUpdateEventArgs
             {

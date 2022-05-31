@@ -404,15 +404,18 @@ namespace DSharpPlus.Entities
         /// <summary>
         /// Returns a specific message
         /// </summary>
-        /// <param name="id">The id of the message</param>
+        /// <param name="id">The ID of the message</param>
+        /// <param name="skipCache">Whether to always make a REST request.</param>
         /// <returns></returns>
         /// <exception cref="UnauthorizedException">Thrown when the client does not have the <see cref="Permissions.ReadMessageHistory"/> permission.</exception>
         /// <exception cref="NotFoundException">Thrown when the channel does not exist.</exception>
         /// <exception cref="BadRequestException">Thrown when an invalid parameter was provided.</exception>
         /// <exception cref="ServerErrorException">Thrown when Discord is unable to process the request.</exception>
-        public async Task<DiscordMessage> GetMessageAsync(ulong id)
+        /// <remarks>Cached message objects will not be returned if <see cref="DiscordConfiguration.MessageCacheSize"/> is set to zero, if the client does not have the <see cref="DiscordIntents.GuildMessages"/> or <see cref="DiscordIntents.DirectMessages"/> intents, or if the discord client is a <see cref="DiscordShardedClient"/>.</remarks>
+        public async Task<DiscordMessage> GetMessageAsync(ulong id, bool skipCache = false)
         {
-            return this.Discord.Configuration.MessageCacheSize > 0
+            return !skipCache
+                && this.Discord.Configuration.MessageCacheSize > 0
                 && this.Discord is DiscordClient dc
                 && dc.MessageCache != null
                 && dc.MessageCache.TryGet(xm => xm.Id == id && xm.ChannelId == this.Id, out var msg)
@@ -444,7 +447,7 @@ namespace DSharpPlus.Entities
         /// <param name="position">Position the channel should be moved to.</param>
         /// <param name="reason">Reason for audit logs.</param>
         /// <param name="lockPermissions">Whether to sync channel permissions with the parent, if moving to a new category.</param>
-        /// <param name="parentId">The new parent id if the channel is to be moved to a new category.</param>
+        /// <param name="parentId">The new parent ID if the channel is to be moved to a new category.</param>
         /// <returns></returns>
         /// <exception cref="UnauthorizedException">Thrown when the client does not have the <see cref="Permissions.ManageChannels"/> permission.</exception>
         /// <exception cref="NotFoundException">Thrown when the channel does not exist.</exception>
@@ -682,8 +685,8 @@ namespace DSharpPlus.Entities
         /// <param name="unique">If true, don't try to reuse a similar invite (useful for creating many unique one time use invites)</param>
         /// <param name="reason">Reason for audit logs.</param>
         /// <param name="targetType">The target type of the invite, for stream and embedded application invites.</param>
-        /// <param name="targetUserId">The id of the target user.</param>
-        /// <param name="targetApplicationId">The id of the target application.</param>
+        /// <param name="targetUserId">The ID of the target user.</param>
+        /// <param name="targetApplicationId">The ID of the target application.</param>
         /// <returns></returns>
         /// <exception cref="UnauthorizedException">Thrown when the client does not have the <see cref="Permissions.CreateInstantInvite"/> permission.</exception>
         /// <exception cref="NotFoundException">Thrown when the channel does not exist.</exception>
@@ -1042,8 +1045,6 @@ namespace DSharpPlus.Entities
                 throw new ArgumentException("Threads can only be created within text or news channels.");
             else if (message.ChannelId != this.Id)
                 throw new ArgumentException("You must use a message from this channel to create a thread.");
-            else if ((archiveAfter == AutoArchiveDuration.ThreeDays && !this.Guild.Features.Contains("THREE_DAY_THREAD_ARCHIVE")) || (archiveAfter == AutoArchiveDuration.Week && !this.Guild.Features.Contains("SEVEN_DAY_THREAD_ARCHIVE")))
-                throw new ArgumentException("This archive duration requires the guild to be boosted or have these archive durations enabled."); //are guild features always cached?
 
             return this.Discord.ApiClient.CreateThreadFromMessageAsync(this.Id, message.Id, name, archiveAfter, reason);
         }
@@ -1067,8 +1068,6 @@ namespace DSharpPlus.Entities
                 throw new InvalidOperationException("News threads can only be created within a news channels.");
             else if (threadType != ChannelType.PublicThread && threadType != ChannelType.PrivateThread && threadType != ChannelType.NewsThread)
                 throw new ArgumentException("Given channel type for creating a thread is not a valid type of thread.");
-            else if ((archiveAfter == AutoArchiveDuration.ThreeDays && !this.Guild.Features.Contains("THREE_DAY_THREAD_ARCHIVE")) || (archiveAfter == AutoArchiveDuration.Week && !this.Guild.Features.Contains("SEVEN_DAY_THREAD_ARCHIVE")))
-                throw new ArgumentException("This archive duration requires the guild to be boosted or have these archive durations enabled.");
             else if (threadType == ChannelType.PrivateThread && !this.Guild.Features.Contains("PRIVATE_THREADS"))
                 throw new ArgumentException("This guild cannot create private threads.");
 
