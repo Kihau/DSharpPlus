@@ -189,9 +189,7 @@ namespace DSharpPlus.Net.WebSocket
                     var segStart = OutgoingChunkSize * i;
                     var segLen = Math.Min(OutgoingChunkSize, len - segStart);
 
-                    await this._ws.SendAsync(new ArraySegment<byte>(bytes, segStart, segLen), WebSocketMessageType.Text,
-                        i == segCount - 1, CancellationToken.None).ConfigureAwait(false);
-
+                    await this._ws.SendAsync(new ArraySegment<byte>(bytes, segStart, segLen), WebSocketMessageType.Text, i == segCount - 1, CancellationToken.None).ConfigureAwait(false);
                 }
             }
             finally
@@ -239,7 +237,7 @@ namespace DSharpPlus.Net.WebSocket
                 using var bs = new MemoryStream();
                 while (!token.IsCancellationRequested)
                 {
-                    // See https://github.com/RogueException/Discord.Net/commit/ac389f5f6823e3a720aedd81b7805adbdd78b66d
+                    // See https://github.com/RogueException/Discord.Net/commit/ac389f5f6823e3a720aedd81b7805adbdd78b66d 
                     // for explanation on the cancellation token
 
                     WebSocketReceiveResult result;
