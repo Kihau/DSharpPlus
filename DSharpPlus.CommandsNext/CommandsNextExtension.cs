@@ -690,7 +690,7 @@ namespace DSharpPlus.CommandsNext
 
                         var (comparison, comparer) = ctx.Config.CaseSensitive switch
                         {
-                            true  => (StringComparison.InvariantCulture, StringComparer.InvariantCulture),
+                            true => (StringComparison.InvariantCulture, StringComparer.InvariantCulture),
                             false => (StringComparison.InvariantCultureIgnoreCase, StringComparer.InvariantCultureIgnoreCase)
                         };
                         cmd = searchIn.FirstOrDefault(xc => xc.Name.Equals(c, comparison) || xc.Aliases.Contains(c, comparer));
@@ -786,6 +786,7 @@ namespace DSharpPlus.CommandsNext
             {
                 Discord = this.Client,
                 Author = actor,
+                Channel = channel,
                 ChannelId = channel.Id,
                 Content = messageContents,
                 Id = timeSpan << 22,
@@ -794,7 +795,7 @@ namespace DSharpPlus.CommandsNext
                 IsTTS = false,
                 _attachments = new List<DiscordAttachment>(),
                 _embeds = new List<DiscordEmbed>(),
-                TimestampRaw = now,
+                _timestampRaw = now,
                 _reactions = new List<DiscordReaction>()
             };
 
