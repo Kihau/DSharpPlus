@@ -288,7 +288,7 @@ namespace DSharpPlus.Net
             Optional<ExplicitContentFilter> explicitContentFilter, Optional<ulong?> afkChannelId,
             Optional<int> afkTimeout, Optional<string> iconb64, Optional<ulong> ownerId, Optional<string> splashb64,
             Optional<ulong?> systemChannelId, Optional<string> banner, Optional<string> description,
-            Optional<string> discorverySplash, Optional<IEnumerable<string>> features, Optional<string> preferredLocale,
+            Optional<string> discoverySplash, Optional<IEnumerable<string>> features, Optional<string> preferredLocale,
             Optional<ulong?> publicUpdatesChannelId, Optional<ulong?> rulesChannelId, Optional<SystemChannelFlags> systemChannelFlags,
             string reason)
         {
@@ -308,7 +308,7 @@ namespace DSharpPlus.Net
                 SystemChannelId = systemChannelId,
                 Banner = banner,
                 Description = description,
-                DiscoverySplash = discorverySplash,
+                DiscoverySplash = discoverySplash,
                 Features = features,
                 PreferredLocale = preferredLocale,
                 PublicUpdatesChannelId = publicUpdatesChannelId,
@@ -1358,7 +1358,7 @@ namespace DSharpPlus.Net
             {
                 HasContent = builder.Content != null,
                 Content = builder.Content,
-                StickersIds = builder.Sticker is null ? Array.Empty<ulong>() : new[] {builder.Sticker.Id},
+                StickersIds = builder._stickers?.Select(x => x.Id).ToArray(),
                 IsTTS = builder.IsTTS,
                 HasEmbed = builder.Embeds != null,
                 Embeds = builder.Embeds,
@@ -3481,7 +3481,7 @@ namespace DSharpPlus.Net
                 Content = builder.Content,
                 IsTTS = builder.IsTTS,
                 Embeds = builder.Embeds,
-                Flags = builder.Flags,
+                Flags = builder._flags,
                 Components = builder.Components
             };
 
@@ -3545,7 +3545,7 @@ namespace DSharpPlus.Net
 
         internal async Task<DiscordGuildApplicationCommandPermissions> EditApplicationCommandPermissionsAsync(ulong application_id, ulong guild_id, ulong command_id, IEnumerable<DiscordApplicationCommandPermission> permissions)
         {
-            var pld = new RestEditApplicationCommmandPermissionsPayload
+            var pld = new RestEditApplicationCommandPermissionsPayload
             {
                 Permissions = permissions
             };

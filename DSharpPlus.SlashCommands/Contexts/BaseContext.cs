@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace DSharpPlus.SlashCommands
 {
     /// <summary>
-    /// Respresents a base context for application command contexts.
+    /// Represents a base context for application command contexts.
     /// </summary>
     public class BaseContext
     {
@@ -61,6 +61,11 @@ namespace DSharpPlus.SlashCommands
         /// Gets the name of the command.
         /// </summary>
         public string CommandName { get; internal set; }
+
+        /// <summary>
+        /// Gets the qualified name of the command.
+        /// </summary>
+        public string QualifiedName { get; internal set; }
 
         /// <summary>
         /// Gets the type of this interaction.

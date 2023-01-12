@@ -955,7 +955,7 @@ namespace DSharpPlus.Entities
             // assign permissions from member's roles (in order)
             perms |= mbRoles.Aggregate(Permissions.None, (c, role) => c | role.Permissions);
 
-            // Adminstrator grants all permissions and cannot be overridden
+            // Administrator grants all permissions and cannot be overridden
             if ((perms & Permissions.Administrator) == Permissions.Administrator)
                 return PermissionMethods.FULL_PERMS;
 
@@ -1046,8 +1046,6 @@ namespace DSharpPlus.Entities
                 throw new InvalidOperationException("News threads can only be created within a news channels.");
             else if (threadType != ChannelType.PublicThread && threadType != ChannelType.PrivateThread && threadType != ChannelType.NewsThread)
                 throw new ArgumentException("Given channel type for creating a thread is not a valid type of thread.");
-            else if (threadType == ChannelType.PrivateThread && !this.Guild.Features.Contains("PRIVATE_THREADS"))
-                throw new ArgumentException("This guild cannot create private threads.");
 
             var threadChannel = await this.Discord.ApiClient.CreateThreadAsync(this.Id, name, archiveAfter, threadType, reason);
             this.Guild._threads.AddOrUpdate(threadChannel.Id, threadChannel, (key, old) => threadChannel);

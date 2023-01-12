@@ -754,11 +754,11 @@ namespace DSharpPlus
         {
             builder.Validate(true);
 
-            return await this.ApiClient.EditMessageAsync(channel_id, message_id, builder.Content, new Optional<IEnumerable<DiscordEmbed>>(builder.Embeds), builder.Mentions, builder.Components, builder.Files, suppressEmbeds ? MessageFlags.SuppressedEmbeds : null, attachments).ConfigureAwait(false);
+            return await this.ApiClient.EditMessageAsync(channel_id, message_id, builder.Content, new Optional<IEnumerable<DiscordEmbed>>(builder.Embeds), builder._mentions, builder.Components, builder.Files, suppressEmbeds ? MessageFlags.SuppressedEmbeds : null, attachments).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Modifes the visibility of embeds in a message.
+        /// Modifies the visibility of embeds in a message.
         /// </summary>
         /// <param name="channel_id">Channel ID</param>
         /// <param name="message_id">Message ID</param>
@@ -850,7 +850,7 @@ namespace DSharpPlus
             => this.ApiClient.GetPinnedMessagesAsync(channel_id);
 
         /// <summary>
-        /// Unpuns a message
+        /// Unpins a message
         /// </summary>
         /// <param name="channel_id">Channel ID</param>
         /// <param name="message_id">Message ID</param>
