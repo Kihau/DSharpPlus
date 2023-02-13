@@ -50,6 +50,14 @@ namespace DSharpPlus.Entities
         }
         internal string _content;
 
+        public MessageFlags Flags { get; internal set; }
+
+        public T SuppressNotifications()
+        {
+            this.Flags |= MessageFlags.SupressNotifications;
+            return this as T;
+        }
+
         public bool IsTTS { get; set; }
 
         /// <summary>
@@ -309,6 +317,7 @@ namespace DSharpPlus.Entities
             this._components.Clear();
         }
 
+        IDiscordMessageBuilder IDiscordMessageBuilder.SuppressNotifications() => this.SuppressNotifications();
         IDiscordMessageBuilder IDiscordMessageBuilder.WithContent(string content) => this.WithContent(content);
         IDiscordMessageBuilder IDiscordMessageBuilder.AddComponents(params DiscordComponent[] components) => this.AddComponents(components);
         IDiscordMessageBuilder IDiscordMessageBuilder.AddComponents(IEnumerable<DiscordComponent> components) => this.AddComponents(components);
@@ -355,6 +364,8 @@ namespace DSharpPlus.Entities
         /// All allowed mentions on this message.
         /// </summary>
         IReadOnlyList<IMention> Mentions { get; }
+
+        MessageFlags Flags { get; }
 
         /// <summary>
         /// Adds content to this message
@@ -450,6 +461,17 @@ namespace DSharpPlus.Entities
         /// <param name="mentions">Collection of mentions to allow in this message.</param>
         /// <returns></returns>
         IDiscordMessageBuilder AddMentions(IEnumerable<IMention> mentions);
+
+        /// <summary>
+        /// Applies <see cref="MessageFlags.SupressNotifications"/> to the message.
+        /// </summary>
+        /// <param name="suppress">Whether to suprpess notifications</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// As per <see cref="MessageFlag.SuppressNotification"/>, this does not change the message's allowed mentions
+        /// (controlled by <see cref="AddMentions"/>), but instead prevents a mention from triggering a push notification.
+        /// </remarks>
+        IDiscordMessageBuilder SuppressNotifications();
 
         /// <summary>
         /// Clears all components attached to this builder.
