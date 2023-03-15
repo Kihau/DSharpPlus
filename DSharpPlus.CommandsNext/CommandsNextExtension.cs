@@ -251,7 +251,7 @@ namespace DSharpPlus.CommandsNext
 
             if (cmd is null)
             {
-                await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = new CommandNotFoundException(fname ?? "UnknownCmd") }).ConfigureAwait(false);
+                await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = new CommandNotFoundException(fname ?? "UnknownCmd") });
                 return;
             }
 
@@ -368,11 +368,11 @@ namespace DSharpPlus.CommandsNext
                 if (res.IsSuccessful)
                     await this.Executed.InvokeAsync(this, new CommandExecutionEventArgs { Context = res.Context }).ConfigureAwait(false);
                 else
-                    await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception }).ConfigureAwait(false);
+                    await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception });
             }
             catch (Exception ex)
             {
-                await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = ex }).ConfigureAwait(false);
+                await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = ex });
             }
             finally
             {
