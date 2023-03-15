@@ -33,7 +33,7 @@ namespace DSharpPlus.CommandsNext
         /// <summary>
         /// Gets the context in which the command was executed.
         /// </summary>
-        public CommandContext Context { get; internal set; } = null!;
+        public CommandContext Context { get; set; } = null!;
 
         /// <summary>
         /// Gets the command that was executed.
