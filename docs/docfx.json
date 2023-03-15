@@ -4,7 +4,7 @@
             "src": [
                 {
                     "src": "../",
-                    "files": "**/bin/Debug/netstandard2.0/**.dll",
+                    "files": "**.sln",
                     "exclude": [
                         "**/obj/**",
                         "_site/**"
@@ -13,13 +13,16 @@
             ],
             "dest": "api",
             "filter": "filter_config.yml",
-	    "shouldSkipMarkup": true
+            "shouldSkipMarkup": true
         }
     ],
     "build": {
-	"xrefService":[
-		"https://xref.docs.microsoft.com/query?uid={uid}"
+	"xref": [
+	   "https://inftord.github.io/Common/xrefmap.yml"
 	],
+        "xrefService": [
+            "https://xref.docs.microsoft.com/query?uid={uid}"
+        ],
         "content": [
             {
                 "files": [
@@ -69,7 +72,7 @@
         "globalMetadata": {
             "_appTitle": "DSharpPlus documentation",
             "_appFooter": "© 2016-2023 DSharpPlus Contributors",
-	    "_appLogoPath": "images/logo.png",
+            "_appLogoPath": "images/logo.png",
             "_appFaviconPath": "images/favicon.ico",
             "_enableSearch": "true"
         },
@@ -77,8 +80,8 @@
         "fileMetadataFiles": [],
         "template": [
             "default",
-            "templates/singulink/singulinkfx",
-	    "memberpage"
+            "templates/singulinkfx",
+            "memberpage"
         ],
         "postProcessors": [
             "ExtractSearchIndex"

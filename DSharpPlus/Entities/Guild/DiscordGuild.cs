@@ -1,7 +1,7 @@
 // This file is part of the DSharpPlus project.
 //
 // Copyright (c) 2015 Mike Santiago
-// Copyright (c) 2016-2022 DSharpPlus Contributors
+// Copyright (c) 2016-2023 DSharpPlus Contributors
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
@@ -482,16 +483,22 @@ namespace DSharpPlus.Entities
         [JsonConverter(typeof(SnowflakeArrayAsDictionaryJsonConverter))]
         internal ConcurrentDictionary<ulong, DiscordStageInstance> _stageInstances;
 
-        // Seriously discord?
-
-        // I need to work on this
-        //
-        // /// <summary>
-        // /// Gets channels ordered in a manner in which they'd be ordered in the UI of the discord client.
-        // /// </summary>
-        // [JsonIgnore]
-        // public IEnumerable<DiscordChannel> OrderedChannels
-        //    => this._channels.OrderBy(xc => xc.Parent?.Position).ThenBy(xc => xc.Type).ThenBy(xc => xc.Position);
+        // Failed attempts so far: 8
+        // Velvet got it working in one attempt. I'm not mad, why would I be mad. - Lunar
+        /// <summary>
+        /// Gets channels ordered in a manner in which they'd be ordered in the UI of the discord client.
+        /// </summary>
+        [JsonIgnore]
+        // Group the channels by category or parent id
+        public IEnumerable<DiscordChannel> OrderedChannels => _channels.Values.GroupBy(channel => channel.IsCategory ? channel.Id : channel.ParentId)
+        // Order the channel by the category's position
+            .OrderBy(channels => channels.FirstOrDefault(channel => channel.IsCategory)?.Position)
+            // Select the category's channels
+            // Order them by text, shoving voice or stage types to the bottom
+            // Then order them by their position
+            .Select(channel => channel.OrderBy(channel => channel.Type is ChannelType.Voice or ChannelType.Stage).ThenBy(channel => channel.Position))
+            // Group them all back together into a single enumerable.
+            .SelectMany(channel => channel);
 
         [JsonIgnore]
         internal bool _isSynced { get; set; }
