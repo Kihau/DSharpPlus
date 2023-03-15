@@ -49,7 +49,7 @@ namespace DSharpPlus.CommandsNext
     /// </summary>
     public class CommandsNextExtension : BaseExtension
     {
-        private CommandsNextConfiguration Config { get; }
+        public CommandsNextConfiguration Config { get; }
         private HelpFormatterFactory HelpFormatter { get; }
 
         private MethodInfo ConvertGeneric { get; }
@@ -187,12 +187,12 @@ namespace DSharpPlus.CommandsNext
             this.Client = client;
 
             this._executed = new AsyncEvent<CommandsNextExtension, CommandExecutionEventArgs>("COMMAND_EXECUTED", this.Client.EventErrorHandler);
-            this._error = new AsyncEvent<CommandsNextExtension, CommandErrorEventArgs>("COMMAND_ERRORED", this.Client.EventErrorHandler);
+            this.Error = new AsyncEvent<CommandsNextExtension, CommandErrorEventArgs>("COMMAND_ERRORED", this.Client.EventErrorHandler);
 
             if (this.Config.UseDefaultCommandHandler)
                 this.Client.MessageCreated += this.HandleCommandsAsync;
-            else
-                this.Client.Logger.LogWarning(CommandsNextEvents.Misc, "Not attaching default command handler - if this is intentional, you can ignore this message");
+            // else
+            //     this.Client.Logger.LogWarning(CommandsNextEvents.Misc, "Not attaching default command handler - if this is intentional, you can ignore this message");
 
             if (this.Config.EnableDefaultHelp)
             {
@@ -251,7 +251,7 @@ namespace DSharpPlus.CommandsNext
 
             if (cmd is null)
             {
-                await this._error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = new CommandNotFoundException(fname ?? "UnknownCmd") });
+                await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = new CommandNotFoundException(fname ?? "UnknownCmd") });
                 return;
             }
 
@@ -368,11 +368,11 @@ namespace DSharpPlus.CommandsNext
                 if (res.IsSuccessful)
                     await this._executed.InvokeAsync(this, new CommandExecutionEventArgs { Context = res.Context });
                 else
-                    await this._error.InvokeAsync(this, new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception });
+                    await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception });
             }
             catch (Exception ex)
             {
-                await this._error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = ex });
+                await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = ctx, Exception = ex });
             }
             finally
             {
@@ -1056,16 +1056,16 @@ namespace DSharpPlus.CommandsNext
         /// </summary>
         public event AsyncEventHandler<CommandsNextExtension, CommandErrorEventArgs> CommandErrored
         {
-            add { this._error.Register(value); }
-            remove { this._error.Unregister(value); }
+            add { this.Error.Register(value); }
+            remove { this.Error.Unregister(value); }
         }
-        private AsyncEvent<CommandsNextExtension, CommandErrorEventArgs> _error = null!;
+        public AsyncEvent<CommandsNextExtension, CommandErrorEventArgs> Error { get; set; } = null!;
 
         private Task OnCommandExecuted(CommandExecutionEventArgs e)
             => this._executed.InvokeAsync(this, e);
 
         private Task OnCommandErrored(CommandErrorEventArgs e)
-            => this._error.InvokeAsync(this, e);
+            => this.Error.InvokeAsync(this, e);
         #endregion
     }
 }

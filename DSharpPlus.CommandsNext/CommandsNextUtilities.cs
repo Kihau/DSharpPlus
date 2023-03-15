@@ -85,7 +85,7 @@ namespace DSharpPlus.CommandsNext
         }
 
         //internal static string ExtractNextArgument(string str, out string remainder)
-        internal static string? ExtractNextArgument(this string str, ref int startPos, IEnumerable<char> quoteChars)
+        public static string? ExtractNextArgument(this string str, ref int startPos, IEnumerable<char> quoteChars)
         {
             if (string.IsNullOrWhiteSpace(str))
                 return null;
