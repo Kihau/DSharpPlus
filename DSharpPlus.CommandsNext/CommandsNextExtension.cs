@@ -186,7 +186,7 @@ namespace DSharpPlus.CommandsNext
 
             this.Client = client;
 
-            this._executed = new AsyncEvent<CommandsNextExtension, CommandExecutionEventArgs>("COMMAND_EXECUTED", this.Client.EventErrorHandler);
+            this.Executed = new AsyncEvent<CommandsNextExtension, CommandExecutionEventArgs>("COMMAND_EXECUTED", this.Client.EventErrorHandler);
             this.Error = new AsyncEvent<CommandsNextExtension, CommandErrorEventArgs>("COMMAND_ERRORED", this.Client.EventErrorHandler);
 
             if (this.Config.UseDefaultCommandHandler)
@@ -366,7 +366,7 @@ namespace DSharpPlus.CommandsNext
                 var res = await cmd.ExecuteAsync(ctx);
 
                 if (res.IsSuccessful)
-                    await this._executed.InvokeAsync(this, new CommandExecutionEventArgs { Context = res.Context });
+                    await this.Executed.InvokeAsync(this, new CommandExecutionEventArgs { Context = res.Context });
                 else
                     await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception });
             }
@@ -1046,10 +1046,10 @@ namespace DSharpPlus.CommandsNext
         /// </summary>
         public event AsyncEventHandler<CommandsNextExtension, CommandExecutionEventArgs> CommandExecuted
         {
-            add { this._executed.Register(value); }
-            remove { this._executed.Unregister(value); }
+            add { this.Executed.Register(value); }
+            remove { this.Executed.Unregister(value); }
         }
-        private AsyncEvent<CommandsNextExtension, CommandExecutionEventArgs> _executed = null!;
+        public AsyncEvent<CommandsNextExtension, CommandExecutionEventArgs> Executed = null!;
 
         /// <summary>
         /// Triggered whenever a command throws an exception during execution.
@@ -1062,7 +1062,7 @@ namespace DSharpPlus.CommandsNext
         public AsyncEvent<CommandsNextExtension, CommandErrorEventArgs> Error { get; set; } = null!;
 
         private Task OnCommandExecuted(CommandExecutionEventArgs e)
-            => this._executed.InvokeAsync(this, e);
+            => this.Executed.InvokeAsync(this, e);
 
         private Task OnCommandErrored(CommandErrorEventArgs e)
             => this.Error.InvokeAsync(this, e);
