@@ -366,7 +366,7 @@ namespace DSharpPlus.CommandsNext
                 var res = await cmd.ExecuteAsync(ctx);
 
                 if (res.IsSuccessful)
-                    await this.Executed.InvokeAsync(this, new CommandExecutionEventArgs { Context = res.Context }).ConfigureAwait(false);
+                    await this.Executed.InvokeAsync(this, new CommandExecutionEventArgs { Context = res.Context });
                 else
                     await this.Error.InvokeAsync(this, new CommandErrorEventArgs { Context = res.Context, Exception = res.Exception });
             }
