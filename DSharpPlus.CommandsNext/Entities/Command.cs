@@ -38,12 +38,12 @@ namespace DSharpPlus.CommandsNext
         /// <summary>
         /// Gets this command's name.
         /// </summary>
-        public string Name { get; internal set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the category this command belongs to.
         /// </summary>
-        public string? Category { get; internal set; } = null;
+        public string? Category { get; set; } = null;
 
         /// <summary>
         /// Gets this command's qualified name (i.e. one that includes all module names).
@@ -53,44 +53,44 @@ namespace DSharpPlus.CommandsNext
         /// <summary>
         /// Gets this command's aliases.
         /// </summary>
-        public IReadOnlyList<string> Aliases { get; internal set; } = Array.Empty<string>();
+        public IReadOnlyList<string> Aliases { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets this command's parent module, if any.
         /// </summary>
-        public CommandGroup? Parent { get; internal set; }
+        public CommandGroup? Parent { get; set; }
 
         /// <summary>
         /// Gets this command's description.
         /// </summary>
-        public string? Description { get; internal set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets whether this command is hidden.
         /// </summary>
-        public bool IsHidden { get; internal set; }
+        public bool IsHidden { get; set; }
 
         /// <summary>
         /// Gets a collection of pre-execution checks for this command.
         /// </summary>
-        public IReadOnlyList<CheckBaseAttribute> ExecutionChecks { get; internal set; } = Array.Empty<CheckBaseAttribute>();
+        public IReadOnlyList<CheckBaseAttribute> ExecutionChecks { get; set; } = Array.Empty<CheckBaseAttribute>();
 
         /// <summary>
         /// Gets a collection of this command's overloads.
         /// </summary>
-        public IReadOnlyList<CommandOverload> Overloads { get; internal set; } = Array.Empty<CommandOverload>();
+        public IReadOnlyList<CommandOverload> Overloads { get; set; } = Array.Empty<CommandOverload>();
 
         /// <summary>
         /// Gets the module in which this command is defined.
         /// </summary>
-        public ICommandModule? Module { get; internal set; }
+        public ICommandModule? Module { get; set; }
 
         /// <summary>
         /// Gets the custom attributes defined on this command.
         /// </summary>
-        public IReadOnlyList<Attribute> CustomAttributes { get; internal set; } = Array.Empty<Attribute>();
+        public IReadOnlyList<Attribute> CustomAttributes { get; set; } = Array.Empty<Attribute>();
 
-        internal Command() { }
+        public Command() { }
 
         /// <summary>
         /// Executes this command with specified context.
