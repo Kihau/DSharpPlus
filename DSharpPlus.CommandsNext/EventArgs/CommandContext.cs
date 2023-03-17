@@ -39,12 +39,12 @@ namespace DSharpPlus.CommandsNext
         /// <summary>
         /// Gets the client which received the message.
         /// </summary>
-        public DiscordClient Client { get; internal set; } = null!;
+        public DiscordClient Client { get; set; } = null!;
 
         /// <summary>
         /// Gets the message that triggered the execution.
         /// </summary>
-        public DiscordMessage Message { get; internal set; } = null!;
+        public DiscordMessage Message { get; set; } = null!;
 
         /// <summary>
         /// Gets the channel in which the execution was triggered,
@@ -75,43 +75,43 @@ namespace DSharpPlus.CommandsNext
         /// <summary>
         /// Gets the CommandsNext service instance that handled this command.
         /// </summary>
-        public CommandsNextExtension CommandsNext { get; internal set; } = null!;
+        public CommandsNextExtension CommandsNext { get; set; } = null!;
 
         /// <summary>
         /// Gets the service provider for this CNext instance.
         /// </summary>
-        public IServiceProvider Services { get; internal set; } = null!;
+        public IServiceProvider Services { get; set; } = null!;
 
         /// <summary>
         /// Gets the command that is being executed.
         /// </summary>
-        public Command? Command { get; internal set; }
+        public Command? Command { get; set; }
 
         /// <summary>
         /// Gets the overload of the command that is being executed.
         /// </summary>
-        public CommandOverload Overload { get; internal set; } = null!;
+        public CommandOverload Overload { get; set; } = null!;
 
         /// <summary>
         /// Gets the list of raw arguments passed to the command.
         /// </summary>
-        public IReadOnlyList<string> RawArguments { get; internal set; } = Array.Empty<string>();
+        public IReadOnlyList<string> RawArguments { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets the raw string from which the arguments were extracted.
         /// </summary>
-        public string RawArgumentString { get; internal set; } = string.Empty;
+        public string RawArgumentString { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the prefix used to invoke the command.
         /// </summary>
-        public string Prefix { get; internal set; } = string.Empty;
+        public string Prefix { get; set; } = string.Empty;
 
-        internal CommandsNextConfiguration Config { get; set; } = null!;
+        public CommandsNextConfiguration Config { get; set; } = null!;
 
-        internal ServiceContext ServiceScopeContext { get; set; }
+        public ServiceContext ServiceScopeContext { get; set; }
 
-        internal CommandContext()
+        public CommandContext()
         {
             this._lazyMember = new Lazy<DiscordMember?>(() => this.Guild is not null && this.Guild.Members.TryGetValue(this.User.Id, out var member) ? member : this.Guild?.GetMemberAsync(this.User.Id).GetAwaiter().GetResult());
         }
@@ -164,7 +164,7 @@ namespace DSharpPlus.CommandsNext
         public Task TriggerTypingAsync()
             => this.Channel.TriggerTypingAsync();
 
-        internal struct ServiceContext : IDisposable
+        public struct ServiceContext : IDisposable
         {
             public IServiceProvider Provider { get; }
             public IServiceScope Scope { get; }

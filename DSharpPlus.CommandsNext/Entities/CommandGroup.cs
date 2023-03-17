@@ -44,7 +44,7 @@ namespace DSharpPlus.CommandsNext
         /// </summary>
         public bool IsExecutableWithoutSubcommands => this.Overloads.Count > 0;
 
-        internal CommandGroup() : base() { }
+        public CommandGroup() : base() { }
 
         /// <summary>
         /// Executes this command or its subcommand with specified context.
