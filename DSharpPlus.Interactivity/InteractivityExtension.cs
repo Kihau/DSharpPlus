@@ -28,11 +28,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.AsyncEvents;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.EventHandling;
-using Emzi0767.Utilities;
 
 namespace DSharpPlus.Interactivity
 {
@@ -1056,6 +1056,25 @@ namespace DSharpPlus.Interactivity
             };
 
             await at.ConfigureAwait(false);
+        }
+
+        public override void Dispose()
+        {
+            this.ComponentEventWaiter.Dispose();
+            this.ModalEventWaiter.Dispose();
+            this.ReactionCollector.Dispose();
+            this.ComponentInteractionWaiter.Dispose();
+            this.MessageCreatedWaiter.Dispose();
+            this.MessageReactionAddWaiter.Dispose();
+            this.Paginator.Dispose();
+            this.Poller.Dispose();
+            this.TypingStartWaiter.Dispose();
+            this._compPaginator.Dispose();
+        }
+
+        ~InteractivityExtension()
+        {
+            this.Dispose();
         }
     }
 }

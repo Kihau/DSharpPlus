@@ -56,6 +56,7 @@ namespace DSharpPlus.Interactivity
         /// <summary>
         /// Whether interactivity should ACK buttons that are pushed. Setting this to <see langword="true"/> will also prevent subsequent event handlers from running.
         /// </summary>
+        [Obsolete("This setting is no longer used or possible to implement.", false)]
         public bool AckPaginationButtons { internal get; set; }
 
         /// <summary>
@@ -96,7 +97,6 @@ namespace DSharpPlus.Interactivity
         /// <param name="other">Configuration the properties of which are to be copied.</param>
         public InteractivityConfiguration(InteractivityConfiguration other)
         {
-            this.AckPaginationButtons = other.AckPaginationButtons;
             this.PaginationButtons = other.PaginationButtons;
             this.ButtonBehavior = other.ButtonBehavior;
             this.PaginationBehaviour = other.PaginationBehaviour;

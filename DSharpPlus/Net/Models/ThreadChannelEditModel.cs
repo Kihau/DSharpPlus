@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DSharpPlus.Entities;
 
 namespace DSharpPlus.Net.Models
 {
@@ -43,6 +44,16 @@ namespace DSharpPlus.Net.Models
         /// Sets if anyone can unarchive a thread
         /// </summary>
         public bool? Locked { internal get; set; }
+
+        /// <summary>
+        /// Sets the applied tags for the thread
+        /// </summary>
+        public IEnumerable<ulong> AppliedTags { internal get; set; }
+
+        /// <summary>
+        /// Sets the flags for the channel (Either PINNED or REQUIRE_TAG)
+        /// </summary>
+        public ChannelFlags? Flags { internal get; set; }
 
         internal ThreadChannelEditModel() { }
     }
