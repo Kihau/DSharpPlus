@@ -175,11 +175,11 @@ namespace DSharpPlus.Lavalink
             Volatile.Write(ref this._isDisposed, true);
 
             if (shouldDestroy)
-                await this.Node.SendPayloadAsync(new LavalinkDestroy(this)).ConfigureAwait(false);
+                await this.Node.SendPayloadAsync(new LavalinkDestroy(this));
 
             if (!isManualDisconnection)
             {
-                await this.SendVoiceUpdateAsync().ConfigureAwait(false);
+                await this.SendVoiceUpdateAsync();
                 this.ChannelDisconnected?.Invoke(this);
             }
         }
@@ -195,7 +195,7 @@ namespace DSharpPlus.Lavalink
                 }
             };
             var vsj = JsonConvert.SerializeObject(vsd, Formatting.None);
-            await (this.Channel.Discord as DiscordClient).SendRawPayloadAsync(vsj).ConfigureAwait(false);
+            await (this.Channel.Discord as DiscordClient).SendRawPayloadAsync(vsj);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace DSharpPlus.Lavalink
                 throw new InvalidOperationException("This connection is not valid.");
 
             this.CurrentState.CurrentTrack = track;
-            await this.Node.SendPayloadAsync(new LavalinkPlay(this, track)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkPlay(this, track));
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace DSharpPlus.Lavalink
                     "Both start and end timestamps need to be greater or equal to zero, and the end timestamp needs to be greater than start timestamp.");
 
             this.CurrentState.CurrentTrack = track;
-            await this.Node.SendPayloadAsync(new LavalinkPlayPartial(this, track, start, end)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkPlayPartial(this, track, start, end));
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace DSharpPlus.Lavalink
             if (!this.IsConnected)
                 throw new InvalidOperationException("This connection is not valid.");
 
-            await this.Node.SendPayloadAsync(new LavalinkStop(this)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkStop(this));
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace DSharpPlus.Lavalink
             if (!this.IsConnected)
                 throw new InvalidOperationException("This connection is not valid.");
 
-            await this.Node.SendPayloadAsync(new LavalinkPause(this, true)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkPause(this, true));
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace DSharpPlus.Lavalink
             if (!this.IsConnected)
                 throw new InvalidOperationException("This connection is not valid.");
 
-            await this.Node.SendPayloadAsync(new LavalinkPause(this, false)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkPause(this, false));
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace DSharpPlus.Lavalink
             if (!this.IsConnected)
                 throw new InvalidOperationException("This connection is not valid.");
 
-            await this.Node.SendPayloadAsync(new LavalinkSeek(this, position)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkSeek(this, position));
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace DSharpPlus.Lavalink
             if (volume is < 0 or > 1000)
                 throw new ArgumentOutOfRangeException(nameof(volume), "Volume needs to range from 0 to 1000.");
 
-            await this.Node.SendPayloadAsync(new LavalinkVolume(this, volume)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkVolume(this, volume));
         }
 
         public async Task SetAudiofiltersAsync(AudioFilters filters)
@@ -345,7 +345,7 @@ namespace DSharpPlus.Lavalink
             if (bands.Distinct(new LavalinkBandAdjustmentComparer()).Count() != bands.Count())
                 throw new InvalidOperationException("You cannot specify multiple modifiers for the same band.");
 
-            await this.Node.SendPayloadAsync(new LavalinkEqualizer(this, bands)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkEqualizer(this, bands));
         }
 
         /// <summary>
