@@ -326,7 +326,7 @@ namespace DSharpPlus.Lavalink
             //     throw new ArgumentOutOfRangeException(nameof(scale),
             //         "Speed, pitch and rate needs to greater than 0.0.");
 
-            await this.Node.SendPayloadAsync(new LavalinkAudiofilters(this, filters)).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkAudiofilters(this, filters));
         }
 
         /// <summary>
@@ -355,9 +355,7 @@ namespace DSharpPlus.Lavalink
             if (!this.IsConnected)
                 throw new InvalidOperationException("This connection is not valid.");
 
-            await this.Node
-                .SendPayloadAsync(new LavalinkEqualizer(this,
-                    Enumerable.Range(0, 15).Select(x => new LavalinkBandAdjustment(x, 0)))).ConfigureAwait(false);
+            await this.Node.SendPayloadAsync(new LavalinkEqualizer(this, Enumerable.Range(0, 15).Select(x => new LavalinkBandAdjustment(x, 0))));
         }
 
         internal Task InternalUpdatePlayerStateAsync(LavalinkState newState)
